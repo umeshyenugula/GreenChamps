@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spin the Wheel - GreenChamps</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #001f1f, #003333);
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ff88;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 350px;
+      height: 350px;
+    }
+
+    canvas {
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(0,255,136,0.7);
+    }
+
+    .spin-btn {
+      margin-top: 30px;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background: #00ff88;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .spin-btn:hover {
+      background: #00cc66;
+      box-shadow: 0 0 15px #00ff88;
+    }
+
+    .result-box {
+      margin-top: 20px;
+      padding: 1rem 2rem;
+      background: rgba(0,0,0,0.7);
+      border-radius: 10px;
+      font-size: 1.1rem;
+      display: none;
+      text-align: center;
+    }
+
+    /* Pointer arrow */
+    .pointer {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 25px solid #ffcc00;
+      filter: drop-shadow(0 0 5px #ff0);
+    }
+  </style>
+</head>
+<body>
+    <div class="sketchfab-embed-wrapper"> <iframe title="Barn" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/5311ea02c9554cd8ab102052edb52547/embed"> </iframe> <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;"> <a href="https://sketchfab.com/3d-models/barn-5311ea02c9554cd8ab102052edb52547?utm_medium=embed&utm_campaign=share-popup&utm_content=5311ea02c9554cd8ab102052edb52547" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Barn </a> by <a href="https://sketchfab.com/Justwo?utm_medium=embed&utm_campaign=share-popup&utm_content=5311ea02c9554cd8ab102052edb52547" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Justwo </a> on <a href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=5311ea02c9554cd8ab102052edb52547" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a></p></div>
+  <h1>🎡 Spin the Wheel to Learn!</h1>
+  <div class="sketchfab-embed-wrapper"> <iframe title="Barn" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/5311ea02c9554cd8ab102052edb52547/embed?autostart=1"> </iframe> <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;"> <a href="https://sketchfab.com/3d-models/barn-5311ea02c9554cd8ab102052edb52547?utm_medium=embed&utm_campaign=share-popup&utm_content=5311ea02c9554cd8ab102052edb52547" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Barn </a> by <a href="https://sketchfab.com/Justwo?utm_medium=embed&utm_campaign=share-popup&utm_content=5311ea02c9554cd8ab102052edb52547" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Justwo </a> on <a href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=5311ea02c9554cd8ab102052edb52547" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a></p></div>
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <canvas id="wheel" width="350" height="350"></canvas>
+  </div>
+  
+  <button class="spin-btn" onclick="spinWheel()" id="spinBtn">SPIN</button>
+  <div class="result-box" id="resultBox"></div>
+
+  <script>
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
+    let topics = [
+      "🌳 Trees", 
+      "💧 Water", 
+      "☀️ Energy", 
+      "♻️ Recycling", 
+      "🐝 Biodiversity", 
+      "🌍 Climate"
+    ];
+
+    const lessonLinks = {
+      "🌳 Trees": "lessons/trees.html",
+      "💧 Water": "lessons/water.html",
+      "☀️ Energy": "lessons/energy.html",
+      "♻️ Recycling": "lessons/recycling.html",
+      "🐝 Biodiversity": "lessons/biodiversity.html",
+      "🌍 Climate": "lessons/climate.html"
+    };
+
+    const colors = ["#00ff88", "#00ccff", "#ffcc00", "#ff6699", "#9966ff", "#ff6600"];
+
+    let currentAngle = 0;
+    let spinning = false;
+
+    function drawWheel(angle = 0) {
+      ctx.clearRect(0, 0, 350, 350);
+      if (topics.length === 0) return;
+      const sliceAngle = (2 * Math.PI) / topics.length;
+      for (let i = 0; i < topics.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(175, 175);
+        ctx.arc(175, 175, 175, sliceAngle * i + angle, sliceAngle * (i + 1) + angle);
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fill();
+        ctx.save();
+        ctx.translate(175, 175);
+        ctx.rotate(sliceAngle * (i + 0.5) + angle);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "black";
+        ctx.font = "16px Arial";
+        ctx.fillText(topics[i], 160, 10);
+        ctx.restore();
+      }
+    }
+
+    function spinWheel() {
+      if (spinning || topics.length === 0) return;
+      spinning = true;
+      const spinAngle = Math.random() * 360 + 360 * 5;
+      const duration = 4000;
+      const start = performance.now();
+
+      function animate(time) {
+        const elapsed = time - start;
+        if (elapsed < duration) {
+          const easeOut = 1 - Math.pow(1 - elapsed / duration, 3);
+          currentAngle = ((spinAngle * easeOut) * Math.PI) / 180;
+          drawWheel(currentAngle);
+          requestAnimationFrame(animate);
+        } else {
+          currentAngle = (spinAngle * Math.PI) / 180;
+          drawWheel(currentAngle);
+
+          const sliceAngle = (2 * Math.PI) / topics.length;
+          let degrees = (spinAngle + 270) % 360;
+          let index = Math.floor((360 - degrees) / (360 / topics.length)) % topics.length;
+
+          const chosenTopic = topics[index];
+          document.getElementById("resultBox").style.display = "block";
+          document.getElementById("resultBox").innerText = "✅ Today's Topic: " + chosenTopic;
+          setTimeout(() => {
+            window.location.href = lessonLinks[chosenTopic];
+          }, 2000);
+          topics.splice(index, 1);
+
+          if (topics.length === 0) {
+            document.getElementById("spinBtn").disabled = true;
+            document.getElementById("spinBtn").innerText = "All Topics Done 🎉";
+          }
+
+          spinning = false;
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    drawWheel();
+  </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GreenChamps</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Background with overlay */
+    body {
+      font-family: Arial, sans-serif;
+      background: url("https://cdn.pixabay.com/photo/2024/05/26/10/15/bird-8788491_1280.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    body::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
+      animation: fadeIn 1.5s ease-in;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.85);
+      animation: slideDown 1s ease forwards;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.3s;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards;
+    }
+
+    .nav-links a:nth-child(1) { animation-delay: 0.3s; }
+    .nav-links a:nth-child(2) { animation-delay: 0.5s; }
+    .nav-links a:nth-child(3) { animation-delay: 0.7s; }
+    .nav-links a:nth-child(4) { animation-delay: 0.9s; }
+    .nav-links a:nth-child(5) { animation-delay: 1.1s; }
+
+    .nav-links a:hover {
+      color: #00ff88;
+      text-shadow: 0 0 10px #00ff88;
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      padding: 2rem;
+    }
+
+    /* Button with shiny hover */
+    .continue-btn {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: bold;
+      background: rgba(128, 128, 128, 0.9);
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .continue-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -75px;
+      width: 50px;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
+      transform: skewX(-25deg);
+    }
+
+    .continue-btn:hover::before {
+      animation: shine 1s ease;
+    }
+
+    .continue-btn:hover {
+      background: #00ff88;
+      color: black;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.95);
+        padding: 1rem;
+        display: none;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .menu-toggle {
+        display: none;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes shine {
+      from { left: -75px; }
+      to { left: 125%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Navbar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">GreenChamps</div>
+      <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+      <ul class="nav-links" id="navMenu">
+        <li><a href="#">Profile</a></li>
+        <li><a href="#">Courses</a></li>
+        <li><a href="#">Leaderboard</a></li>
+        <li><a href="#">Test</a></li>
+        <li><a href="#">EcoPoints</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="content">
+    <button class="continue-btn">Continue Learning →</button>
+  </main>
+  <script>
+    function toggleMenu() {
+      document.getElementById("navMenu").classList.toggle("show");
+    }
+  </script>
+</body>
+</html>
